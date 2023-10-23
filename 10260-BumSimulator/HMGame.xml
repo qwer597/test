@@ -1,0 +1,283 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<set>
+    <!-- HM_InGameAgent版本号设置，研发人员调试请使用debug（小写） -->
+    <version value="dwm" />
+    <!-- 开发调试模式，默认关闭，非开发人员勿动 -->
+    <debug value="0" >
+	    <!-- 配置监控按键状态，编码打点 -->
+        <VideoDelayMeasure>
+		    <!-- on 1：打开，0：关闭 -->
+            <on value="0" />
+            <!-- value: 键值，512: 鼠标左键  status：按键状态  down：按下  up：抬起-->
+            <key value="512" status="down" />
+			<!-- encode_event：编码Event命名 -->
+            <encode_event value="encode_videoDelayMeasure_mark" />
+			<!-- rtc_event：Rtc Event命名 -->
+            <rtc_event value="rtc_videoDelayMeasure_mark" />
+        </VideoDelayMeasure>
+	</debug>
+    <!-- 本地设置，每个游戏均需要针对配置 -->
+    <local>
+        <!--桌面模式下专用配置项-->
+	    <desktop_mode>
+		  <!--grab_mode定义采集相关配置  mode: 1:dxgi采集  2：wgc桌面采集  3:wgc窗口采集  4:VR采集 默认为 1-->
+          <grab_mode value="1" />
+          <!-- 桌面模式 采集编码时延优化模式（帧补偿） -->
+		  <encode>
+		    <!-- optimize_mode 优化模式 0：不开启 1：开启帧补偿模式 -->
+            <optimize_mode value="0" />
+          </encode>
+        </desktop_mode>
+
+		<!--进程模式下专用配置项-->
+        <process_mode>
+          <!--encode定义编码相关配置  owner_optimize: 目前针对房主使用编码丢帧优化策略  默认为false-->
+          <encode owner_optimize="false" />
+		  <!-- I帧检测功能，用于检测游戏启动的effective_time秒内，如编码管理模块没有收到Texture2D, 则重启
+		       value: 0 不开启， 1：开启  effective_time：配置的检测时常，单位s --> 		  
+		  <check_iframe value="0" check_duration="30" />
+        </process_mode>
+		
+		<!-- 游戏是否支持私有数据通道，true:支持 false:不支持 -->
+	    <support_hm_sdk value="false" />
+        <!-- 光标模式 0：自动 1：始终显示光标/绝对坐标模式 2：始终隐藏并锁定光标/相对坐标模式  3: 混合模式(逆水寒)-->
+        <mouse_mode mode="0" />
+		<!-- 麦克风 status:打开关闭状态 0:关闭 1:打开 -->
+		<micphone status="0" />
+        <!-- 游戏名称：XXX -->
+        <!-- 启动程序文件名，需要带后缀名 check_exit_code: 检查退出码; exit_code: 正常退出码 -->
+        <!-- 游戏崩溃重启配置 如要开启，两个参数必须都配置 restart_counts: 崩溃重启次数; restart_effective_time: 崩溃重启功能生效时间限制 单位s -->
+        <exe_name value="M:\hm_epic_game\BumSimulator\BumSim\Binaries\Win64\BumSim-Win64-Shipping.exe" check_exit_code="true" exit_code="0" restart_counts="6" restart_effective_time="100000" />
+		<!-- 启动程序时的程序路径 -->
+        <path value="M:\hm_epic_game\BumSimulator\BumSim\Binaries\Win64\" />
+        <!-- 启动exe参数，部分游戏可以直接指定窗口化运行模式等 -->
+        <exe_args value="" />
+        <!-- 桌面配置 -->
+        <proc_list></proc_list>
+	    <main_wnd checkwnd="0" checkmaxsize="0" title="" class="UnityWndClass" waitsec="40" />
+		<!-- 检测 steam 游戏窗口 checkwnd:检测开关 0:不检测 -->
+		<steam_game_wnd checkwnd="0" title="Beat Saber" class="UnityWndClass" waitsec="40" />
+		<!-- needalive: 是否需要游戏活着才推流, proc_name: 要统计FPS的进程名 -->
+        <main_proc needalive = "1" proc_name="BumSim-Win64-Shipping.exe"/>
+        <Kill_Explorer enable = "false"/>
+        <!-- 桌面配置 end -->
+        <!-- 启动程序时显示窗口, DWM模式下自动为1 -->
+        <runwithwindow value="0"/>
+        <!-- 脚本配置，暂时没有利用起来。将来可以用作在游戏启动前做一些操作。 -->
+        <scripts>
+            <before_run value="0">""</before_run>
+            <after_run value="0">""</after_run>
+        </scripts>
+        <!-- DWM模式下该游戏的每个需要注入InGameAgent抓图的进程。all=1表示自动在所有子进程中注入InGameAgent。 -->
+        <!-- window_name是目标窗口的标题。 -->
+        <dwm all="0">
+            <proc name="BumSim-Win64-Shipping.exe" window_name=""/>
+        </dwm>
+		
+        <!-- GDI采集相关 -->
+        <!-- enable: 是否对此游戏启用GDI采集 -->
+        <!-- target: GDI采集目标属性，可以配置多条 -->
+        <!-- process_name: GDI采集的目标进程名称，若IGA所在进程与配置的进程名称不符，则不会对此进程启用GDI采集 -->
+        <!-- window_name, window_classname: 采集目标的窗口名和窗口类名，可见窗口匹配与任意一者匹配，即将该窗口作为采集目标；窗口类名的匹配优先级高于窗口名；若二者均为空，则自动选择所有可见窗口中分辨率最大者作为采集目标 -->
+        <!-- max_fps: 最大采集帧率，默认值为30 -->
+        <!-- show_fps: 是否在采集到的的图像左上角叠加显示采集帧率，默认为false -->
+        <!-- save_image_interval: 每隔多少帧，将采集到的图像存储至 C://GDICapturedImage.bmp，用于调试，默认为0即不启用此功能；新创建的图像文件会覆盖旧文件 -->
+        <gdi_capture enable="false">
+            <target process_name="SimpleWpfWindow.exe" window_name="" window_classname="" max_fps="60" show_fps="true" save_image_interval="900" />
+            <target process_name="Broforce_beta.exe" window_name="" window_classname="" max_fps="30" show_fps="true" save_image_interval="900" />
+        </gdi_capture>
+        
+		<!-- 自动点击功能 -->
+        <!-- 用于跳过游戏的启动器等窗口，支持3种模式：按控件ID查找点击目标，按控件名称查找点击目标，按相对坐标查找点击目标 -->
+        <!-- enable: 是否启用此功能 -->
+        <!-- target: 自动点击目标属性，可以配置多条 -->
+        <!-- process_name: 目标的进程名称 -->
+        <!-- window_name, window_classname: 目标的窗口名和窗口类名；仅查找当前进程的非隐藏窗口；当窗口类名与配置的值完全一致，或窗口名包含配置的值时，视为匹配成功 -->
+        <!-- ctrl_id: 按钮的控件ID -->
+        <!-- ctrl_name: 按钮的控件名称 -->
+        <!-- pos_x, pos_y: 点击位置的相对坐标，如需启用必须全部配置；以窗口左上角为坐标原点(0,0)，从原点出发，向右和向下为正值；预留配置，实际功能尚未实现 -->
+        <!-- 优先级：控件ID > 控件名称 > 点击位置；对于同一条target配置，以其中优先级最高的非空配置项为准，后续配置项会被忽略 -->
+        <auto_click enable="false">
+			<target process_name="kao2.exe" window_name="Kao the kangaroo: 2nd round" window_classname="#32770" ctrl_id="5100" ctrl_name="" pos_x="80" pos_y="20" />
+            <target process_name="SimpleWpfWindow.exe" window_name="Kao the kangaroo: 2nd round" window_classname="#32770" ctrl_id="5100" ctrl_name="" pos_x="80" pos_y="20" />
+        </auto_click>
+    </local>
+	<!-- 桌面模式配置 -->
+    <extra_node>
+        <kill_proc_list>
+            <proc name="BumSim-Win64-Shipping.exe"/>
+        </kill_proc_list>
+    </extra_node>
+    <!-- 桌面模式配置 end -->
+    <!-- 模块功能设定，用模块化方式划分功能设置 -->
+    <moudle>
+		<!-- 是否支持窗口分辨率修改, 默认支持 -->
+		<support_movewindow value="true" />
+		<!-- 指示游戏画面和键鼠是否需要旋转 0:不旋转, 1:逆时针转90度 -->
+        <rotation_pic value="0"/>
+
+        <ddraw value="0" />
+        <d3d8 value="0" />
+        <d3d9 value="0" />
+        <d3d9ex value="0" />
+        <!-- 大型游戏需要DXInput才能支持ESC等按键。 -->
+        <dinput8 value="1">
+            <key_state value="1" />
+            <key_data value="1" />
+            <mouse_state value="1" />
+            <mouse_data value="1" />
+            <gamepad_state value="0" />
+            <gamepad_data value="0" />
+            <!-- 禁用游戏手柄，处理部分游戏识别虚拟手柄异常问题 -->
+            <disable_gamepad value="0" />
+            <!-- 伪造xbox手柄数量，没有则默认为4 -->
+            <fake_xbox_gamepad_num value="1" />
+        </dinput8>
+        <dxgi value="1">
+            <!-- 是否开启d3d11支持，注意开启后不能支持d3d10 -->
+            <ifd3d11 value="1"/>
+            <hook>
+                <keep_adapter value="true" />
+            </hook>
+        </dxgi>
+        <gdi32 value="0" />
+        <kernel32 value="1">
+            <!-- 创建进程 -->
+            <create_process value="1" />
+			<file>
+				<create_file enable="true" force_share_mode="false" />
+				<read_file enable="true" />
+				<hid_device enable="true" />
+			</file>
+        </kernel32>
+        <kernelbase>
+            <!--禁用TerminateThread，防止英雄联盟把IGA的线程杀掉。 -->
+            <crack_TerminateThread value="1" />
+        </kernelbase>
+        <!-- 声音重定向Hook，mmdev和ole32都能用，建议使用mmdev -->
+		<mmdev value="1"/>
+        <ole32 value="1">
+            <!-- 该选项配合directinput使用，用来在游戏检测xbox手柄时进行欺骗。游戏检测xbox手柄主要是检测vid pid -->
+            <wmi value="1" />
+			<!-- 监控麦克风的打包状态 -->
+			<mic_status enable="false" />
+        </ole32>
+        <opengl32 value="0" />
+        <!-- 英雄联盟有到127.0.0.1的连接，需要Hook一下解决多开问题，对其他游戏无影响。 -->
+        <ws2_32 value="1" />
+        <shell32 value="1">
+            <!-- 创建进程 -->
+            <create_process value="1" />
+        </shell32>
+		<xinput value="1" fake_xbox_gamepad_num="1"/>
+		<hid enable="true" hook_freepreparseddata="0"/>
+		<!-- 游戏内编辑框输入状态的Hook -->
+		<imm32 value="0"/>
+        <user32 value="1">
+            <!-- 创建窗口控制 -->
+            <forms>
+                <!-- 隐藏所有窗口, DWM模式自动为0 -->
+                <hide_all value="1" />
+                <!-- 将进程放到一个独立的桌面上去，达到隐藏窗口的目的，不过部分游戏不支持。DWM模式自动为0 -->
+                <private_desktop value="0" />
+                <!-- 设置窗口风格,隐藏窗口 -->
+                <set_style value="0" />
+            </forms>
+            <!-- 处理Ruse类游戏，GetCursorPos未转换坐标问题（临时） -->
+            <cur_pos_reset value="0" />
+            <input>
+                <post_key value="1" />
+                <post_mouse value="1" />
+                <push_key value="1" />
+                <!-- push_mouse会修改m_cursor_pos，和DWM模式冲突 -->
+                <push_mouse value="1" />
+                <!-- 中文输入 -->
+                <post_char value="1" />
+                <!-- 原数据处理 -->
+                <raw_key value="1" />
+                <raw_mouse value="1" />
+				<!-- 多点触控外设 -->
+				<multitouch value="0" />
+            </input>
+            <!-- 关于鼠标左键双击处理(鼠标右键双击暂未处理）默认禁止==0;开启==1 -->
+            <disable_mouse_dbclick value="0" />
+            <!-- 针对大航海-纪元1701BUG处理，DWM模式都禁止Hook GetTopWindow -->
+            <disable_GetTopWindow value="1" />
+            <!-- 针对3.53以后版本的客户端，不再发送VK_SHIFT键值。1 == 模拟VK_SHIFT -->
+            <enable_Simulation_SHIFT value="0" />
+            <!-- GetKeyState 获取键盘按键有四个状态,分别:0x0000,0xff81,0x0001,0xff80;针对雷曼。默认为0 -->
+            <enable_KeyState value="1" />
+            <hooks>
+                <!-- 开启hook的api -->
+                <raw_input value="1" fake_xbox_gamepad_num="1" />
+            </hooks>
+            <wnd_proc_chain value="0" />
+        </user32>
+    </moudle>
+    <!-- 通用设置 -->
+    <common>
+        <!-- 光标处理相关 -->
+        <cursor>
+            <!-- 允许服务端向终端回传鼠标坐标 -->
+            <send_cursor_position_to_client enable="false" />
+            <!-- 启用鼠标坐标回传顺序检查，确保终端按顺序处理；仅当鼠标坐标回传启用时生效 -->
+            <enable_mouse_seq_check enable="true" />
+            <!-- 回传偏移，针对英雄萨姆回传坐标范围过小 -->
+            <pos_send_back_offset value="0" />
+            <!-- 偏移延迟，开启回传偏移后有效，单位秒 -->
+            <pos_send_back_offset_timeoff value="0" />
+            <!-- 光标隐藏时，光标位置坐标计算=游戏设置的系统光标坐标+客户端光标的位移 -->
+            <hide_cursorpos_sendback_offset enable="false" />
+            <!-- 是否调用GetClassLongPtr(hWnd,GCLP_HCURSOR)获取游戏光标数据, 默认为0：不打开 -->
+            <get_wndclass_cur value="0" />
+            <!-- 下方是目前不再使用的配置项-->
+            <!-- 开启动态光标格式传输 -->
+            <enable_dynamics_cur value="0" />
+            <!-- 仅处理光标显示隐藏 -->
+            <show_hide_only value="0" />
+            <!-- 总是隐藏，双光标 -->
+            <always_hide value="1" />
+            <!-- 总是显示，特殊游戏处理，不要与always_hide冲突，否则失效 -->
+            <always_show value="0" />
+            <!-- 将游戏光标合成到游戏图像中 -->
+            <bind_cursor value="0" />
+            <!-- 边界值转换，必须为正数，处理帝国三边界移动(20) -->
+            <frame_pos_change value="0" />
+            <!-- 是否是系统光标，某些游戏用的是系统光标。1 == 是系统光标。默认为0 -->
+            <is_system_cursor value="0" />
+        </cursor>
+        <!-- 游戏物理鼠标速度设置 -->
+        <phy_mouse_speed value="0">100</phy_mouse_speed>
+        <!-- 视频设置 -->
+        <video>
+            <!-- IGA是否做等比缩放，true等比并填充黑色，false拉伸到全幅 2013.12.26 by lyf -->
+            <out_enc_auto_fit enable="false" />
+            <!-- 根据客户端，重设分辨率-->
+            <reset_display value="1" />
+            <!-- 强制分辨率设置，只有value为1时方有效 -->
+            <width value="0">1024</width>
+            <height value="0">768</height>
+            <!-- 确认游戏首次窗口设备正确（特殊，针对幕府游戏） -->
+            <be_sure_first_hwnd_ok value="0" />
+            <!-- 为DX9使用的额外调试用参数 -->
+            <present_for_program value = "0" />
+        </video>
+        <!-- 针对特殊游戏处理，同一时刻只能存在一个为1 -->
+        <games>
+            <!-- 游戏帧率控制，通过绘制时等待，限制游戏帧率 -->
+            <game_fps_lock value="60" />
+            <!-- 如果不能及时处理，就丢弃other消息 -->
+            <drop_other value="true" />
+            <!-- 魔兽世界，50为回传间隔时间ms，如果不灵敏，可微调 -->
+            <wow_mouse_do value="0">50</wow_mouse_do>
+            <!-- 控制输入法的，不知道有什么用 -->
+            <process_ime_composition value="0" />
+            <!-- 坦克世界特殊处理 -->
+            <WorldOfTanks_do value="0" />
+            <!-- 梦幻海底（flash） -->
+            <DreamOcean_do value="0" />
+			<!-- 设置游戏窗口焦点 -->
+			<Adventure_do value="true"/>
+        </games>
+    </common>
+</set>
